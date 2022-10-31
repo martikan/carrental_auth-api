@@ -1,0 +1,8 @@
+build
+*.test
+*.out
+.git/
+.vscode/
+.idea/
+workspace.code-workspace
+.DS_Store

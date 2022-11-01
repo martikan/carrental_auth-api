@@ -63,12 +63,13 @@ func InitApi() *Api {
 func (a *Api) setupRouter() {
 	router := gin.Default()
 
+	// Open routes
+
 	// FIXME: Implement it for k8s
 	// Health
 	// router.GET("/health/live", a.live)
 	// router.GET("/health/ready", a.ready)
 
-	// Cars
 	router.POST("/api/v1/auth/signin", a.signIn)
 	router.POST("/api/v1/auth/signup", a.signUp)
 

@@ -18,6 +18,9 @@ jobs:
 
     - name: Build
       run: go build -v ./...
+    
+    - name: check folders
+      run: ls -al
 
     - name: Archive build artifacts
       uses: actions/upload-artifact@v3

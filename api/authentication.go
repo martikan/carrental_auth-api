@@ -10,6 +10,8 @@ import (
 	db "github.com/martikan/carrental_auth-api/db/sqlc"
 	"github.com/martikan/carrental_auth-api/util"
 	e "github.com/martikan/carrental_common/exception"
+	"github.com/martikan/carrental_common/middleware"
+	common_utils "github.com/martikan/carrental_common/util"
 )
 
 type signInRequest struct {
@@ -45,6 +47,25 @@ func newUserResponse(user db.User) userResponse {
 		LastName:  user.LastName,
 		CreatedAt: user.CreatedAt,
 	}
+}
+
+func (a *Api) currentUser(ctx *gin.Context) {
+	authPayload := ctx.MustGet(middleware.AuthorizationPayloadKey).(*common_utils.Payload)
+
+	currentUser, err := a.db.GetUserByEmail(ctx, authPayload.Username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, e.ApiMessage("User not found", 404))
+			return
+		}
+
+		ctx.JSON(http.StatusBadRequest, e.ApiError(err))
+		return
+	}
+
+	dto := newUserResponse(currentUser)
+
+	ctx.JSON(http.StatusOK, dto)
 }
 
 func (a *Api) signIn(ctx *gin.Context) {

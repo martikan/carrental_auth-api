@@ -10,6 +10,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/martikan/carrental_auth-api/config"
 	dbConn "github.com/martikan/carrental_auth-api/db/sqlc"
+	"github.com/martikan/carrental_common/middleware"
 	"github.com/martikan/carrental_common/util"
 )
 
@@ -72,6 +73,12 @@ func (a *Api) setupRouter() {
 
 	router.POST("/api/v1/auth/signin", a.signIn)
 	router.POST("/api/v1/auth/signup", a.signUp)
+
+	// Authenticated routes
+
+	authRoutes := router.Group("/").Use(middleware.AuthMiddleware(a.tokenMaker))
+
+	authRoutes.GET("/api/v1/auth/current_user", a.currentUser)
 
 	a.router = router
 }

@@ -1,0 +1,49 @@
+name: Run tests
+
+on: pull_request
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Init
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+        cache: true
+
+    - name: Build
+      run: |
+        make build
+
+    - name: Archive build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          build
+
+  test:
+    name: Test
+    needs: [ Build ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Init
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+          cache: true
+
+      - name: Run Test
+        run: |
+          make test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2

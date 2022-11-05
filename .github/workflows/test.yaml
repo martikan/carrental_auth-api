@@ -19,9 +19,6 @@ jobs:
     - name: Build
       run: |
         make build
-    
-    - name: check folders
-      run: ls -al
 
     - name: Archive build artifacts
       uses: actions/upload-artifact@v3

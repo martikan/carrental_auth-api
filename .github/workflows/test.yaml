@@ -17,7 +17,8 @@ jobs:
         cache: true
 
     - name: Build
-      run: go build -v ./...
+      run: |
+        make build
     
     - name: check folders
       run: ls -al
